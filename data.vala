@@ -24,10 +24,17 @@ class DTT.Data : GLib.Object {
 
 	private const string base_url = "http://api.dailytvtorrents.org/1.0/";
 
-	public DTT.Data () {
+	public Data () {
 		// Constructor
 	}
 
+	public string shows_get_text_info (string show_names) {
+		string method = "shows.getTextInfo";
+		string url = "%s/%s?show_names=%s&colors=yes".printf(base_url, method, show_names);
+		return query_remote (url);
+	}
+	
+	// Private Methods
 	private string query_remote (string url) {
 		var session = new Soup.SessionAsync();
 		var message = new Soup.Message("GET", url);
@@ -37,7 +44,14 @@ class DTT.Data : GLib.Object {
 
 	private Json.Object parse_json (string json_text) {
 		var parser = new Json.Parser();
-		parser.load_from_data (json_text);
+
+		try {
+			parser.load_from_data (json_text);
+		}
+		catch (Error e) {
+			stderr.printf ("[ERROR]: %s\n", e.message);
+		}
+
 		var root_object = parser.get_root().get_object();
 		return root_object;
 	}
