@@ -23,14 +23,35 @@ using Json;
 class DTT.Data : GLib.Object {
 
 	private const string base_url = "http://api.dailytvtorrents.org/1.0/";
+	public Params optparams;
+
+	public struct Params {
+		public static string show_name;
+		public static int page;
+		public static string episode_num;
+		public static string quality;
+		public static string fallback; 
+		public static int max_age_hours;
+		public static int max_items;
+		public static string sort; // age (newest first[default]) or score (highest first) 
+		public static bool colors;
+		public static string links;
+	}
 
 	public Data () {
 		// Constructor
 	}
 
+	public void episode_get_latest (string show_name) {
+		string method = "episode.getLatest";
+		string url = "%s/%s?show_name=%s".printf(base_url, method, show_name);
+	}
+
 	public string shows_get_text_info (string show_names) {
 		string method = "shows.getTextInfo";
-		string url = "%s/%s?show_names=%s&colors=yes".printf(base_url, method, show_names);
+		string colors = optparams.colors ? "&colors=yes" : "";
+		string url = "%s/%s?show_names=%s%s".printf(base_url, method, show_names, colors);
+
 		return query_remote (url);
 	}
 	

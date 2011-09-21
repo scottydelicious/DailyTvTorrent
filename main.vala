@@ -33,6 +33,7 @@ class DTT.Main : GLib.Object {
 		static bool info;
 		static bool colors;
 		static bool links;
+		static bool get_new;
 		static string search;
 
 		public static const OptionEntry[] options = {
@@ -43,6 +44,7 @@ class DTT.Main : GLib.Object {
 			{"info", 'i', 0, OptionArg.NONE, ref Globals.info, "Pass the 'info' flag", null},
 			{"colors", 'c', 0, OptionArg.NONE, ref Globals.colors, "Get full color text", null},
 			{"links", 'l', 0, OptionArg.NONE, ref Globals.links, "Get links with the text info", null},
+			{"get-new", 0, 0, OptionArg.NONE, ref Globals.get_new, "Returns the show objects of new series.", null},
 			{"search", 's', 0, OptionArg.STRING, ref Globals.search, "Search remotely", "\"American\""},
 			{null}
 		};
@@ -50,6 +52,7 @@ class DTT.Main : GLib.Object {
 	}
 
 	private static const string VERSION = "Daily TV Torrents CLI\nversion 0.1.0\n";
+	private static string data_response;
 
 	public static int main (string[] args) {
 		DTT.Data dtt = new DTT.Data ();
@@ -76,7 +79,24 @@ class DTT.Main : GLib.Object {
 			stdout.printf ("Will show episode info\n");
 		}
 
-		stdout.printf ("%s\n", dtt.shows_get_text_info (args[1]) );
+		if (Globals.show) {
+			
+			if (Globals.info) {
+				// Info
+				return 0;
+			}
+			
+			if (Globals.get_new) {
+				// Get new
+				return 0;
+			}
+			
+			dtt.optparams.colors = Globals.colors ? true : false;
+			data_response = dtt.shows_get_text_info (args[1]);
+			stdout.printf ("%s\n", data_response);
+
+		}
+
 
 		foreach (string a in args) {
 			stdout.printf ("ARGUMENT: %s\n", a);
