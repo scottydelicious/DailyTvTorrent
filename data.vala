@@ -45,6 +45,14 @@ class DTT.Data : GLib.Object {
 	public void episode_get_latest (string show_name) {
 		string method = "episode.getLatest";
 		string url = "%s/%s?show_name=%s".printf(base_url, method, show_name);
+		string data = query_remote (url);
+		Json.Object root = json_root_object (data);
+		stdout.printf ("Title: %s/n", root.get_string_member ("title") );
+		stdout.printf ("Number: %s/n", root.get_string_member ("num") );
+		stdout.printf ("Age: %i/n", (int) root.get_int_member ("age") );
+		stdout.printf ("HD: %s/n", root.get_string_member ("hd") );
+		stdout.printf ("720: %s/n", root.get_string_member ("720") );
+		stdout.printf ("1080: %s/n", root.get_string_member ("1080") );
 	}
 
 	public string shows_get_text_info (string show_names) {
@@ -63,7 +71,7 @@ class DTT.Data : GLib.Object {
 		return (string) message.response_body.data;
 	}
 
-	private Json.Object parse_json (string json_text) {
+	private Json.Object json_root_object (string json_text) {
 		var parser = new Json.Parser();
 
 		try {
