@@ -1,6 +1,6 @@
 /*
 BUILD WITH:
-valac --thread --pkg libsoup-2.4 --pkg json-glib-1.0 main.vala -o dtt
+valac --thread --pkg libsoup-2.4 --pkg json-glib-1.0 main.vala data.vala -o dtt
 
 
 Copyright 2011 Scotty Delicious <scottydelicious@gmail.com>
