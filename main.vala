@@ -1,6 +1,6 @@
 /*
 BUILD WITH:
-valac --thread --pkg libsoup-2.4 --pkg json-glib-1.0 main.vala data.vala -o dtt
+valac --thread --pkg libsoup-2.4 --pkg json-glib-1.0 --pkg gee-1.0 main.vala data.vala -o dtt
 
 
 Copyright 2011 Scotty Delicious <scottydelicious@gmail.com>
@@ -20,6 +20,8 @@ License for more details.
 You should have received a copy of the GNU General Public License 
 along with Daily TV Torrents. If not, see http://www.gnu.org/licenses/.
 */
+
+using Gee;
 
 class DTT.Main : GLib.Object {
 
@@ -67,6 +69,9 @@ class DTT.Main : GLib.Object {
 			stderr.printf ("Error initializing: %s\n", e.message);
 		}
 		
+		/*
+		 * Start Parsing the parameters
+		 */
 		if (Globals.version) {
 			stdout.printf("%s",VERSION);
 			return 0;
@@ -76,7 +81,17 @@ class DTT.Main : GLib.Object {
 		}
 
 		if (Globals.episode) {
-			stdout.printf ("Will show episode info\n");
+			HashMap<string,string> le = dtt.episode_get_latest (args[1]);
+			string output = "\nTitle: %s\n";
+			output += "Episode: %s\n";
+			output += "Age %s\n\n";
+			output += "Links\n-------\n";
+			output += "[HD]: %s\n";
+			output += "[720]: %s\n";
+			output += "[1080]: %s\n";
+			stdout.printf(output, le["title"], le["number"], le["age"], le["hd"], le["720"], le["1080"]);
+
+			return 0;
 		}
 
 		if (Globals.show) {

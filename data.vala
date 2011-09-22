@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Daily TV Torrents. If not, see http://www.gnu.org/licenses/.
 */
 
+using Gee;
 using Soup;
 using Json;
 
@@ -42,17 +43,27 @@ class DTT.Data : GLib.Object {
 		// Constructor
 	}
 
-	public void episode_get_latest (string show_name) {
+	public HashMap episode_get_latest (string show_name) {
+
 		string method = "episode.getLatest";
 		string url = "%s/%s?show_name=%s".printf(base_url, method, show_name);
 		string data = query_remote (url);
+		var le = new HashMap <string, string> ();
+
 		Json.Object root = json_root_object (data);
-		stdout.printf ("Title: %s/n", root.get_string_member ("title") );
-		stdout.printf ("Number: %s/n", root.get_string_member ("num") );
-		stdout.printf ("Age: %i/n", (int) root.get_int_member ("age") );
-		stdout.printf ("HD: %s/n", root.get_string_member ("hd") );
-		stdout.printf ("720: %s/n", root.get_string_member ("720") );
-		stdout.printf ("1080: %s/n", root.get_string_member ("1080") );
+		
+		le["title"] = root.get_null_member("title") ? "" : root.get_string_member ("title");
+		le["number"] = root.get_null_member("num") ? "" : root.get_string_member ("num");
+		le["age"] = root.get_null_member("age") ? "" : root.get_int_member ("age").to_string();
+		le["hd"] = root.get_null_member("hd") ? "" : root.get_string_member ("hd");
+		le["720"] = root.get_null_member("720") ? "" : root.get_string_member ("720");
+		le["1080"] = root.get_null_member("1080") ? "" : root.get_string_member ("1080");
+
+		foreach (var entry in le.entries) {
+		//	stdout.printf("[%s]: %s\n", entry.key, entry.value);
+		}
+		return le;
+
 	}
 
 	public string shows_get_text_info (string show_names) {
