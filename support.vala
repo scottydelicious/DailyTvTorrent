@@ -49,13 +49,19 @@ class Age : Object {
 	}	
 }
 
+class Show : Object {
+	public string name { get; set; }
+	public string pretty_name { get; set; }
+	public string genre { get; set; }
+	public string link { get; set; }
+	public LatestEpisode latest_episode { get; set; }
+}
 
 /**
  * Structs
  */
 struct Options {
 	static string show_name;
-	int page;
 	static string episode_num;
 	static string quality;
 	bool fallback; 
@@ -73,12 +79,4 @@ struct LatestEpisode {
 	static string hd;
 	static string hd720;
 	static string hd1080;
-}
-
-struct Show {
-	static string name;
-	static string pretty_name;
-	static string genre;
-	static string link;
-	LatestEpisode latest_episode;
 }

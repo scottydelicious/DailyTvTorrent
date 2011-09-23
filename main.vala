@@ -25,7 +25,7 @@ class DTT.Main : GLib.Object {
 
 	struct Globals {
 		
-		static string[] args;
+		//static string[] args;
 		static bool version;
 		static bool torrent;
 		static bool episode;
@@ -58,7 +58,7 @@ class DTT.Main : GLib.Object {
 		string output = "\nTitle: %s\n";
 		output += "Episode: %s\n";
 		output += "Uploaded: %s\n\n";
-		output += "Torrent Links\n--------------\n";
+		output += "**Torrent Links**\n";
 		output += "[HD]: %s\n";
 		output += "[720]: %s\n";
 		output += "[1080]: %s\n";
@@ -66,7 +66,7 @@ class DTT.Main : GLib.Object {
 	}
 
 	public static void print_show (Show s) {
-		string output = "";
+		string output = "\n\n\n--------------------------------------------------";
 		output += "\nName: %s".printf (s.name);
 		output += "\nPretty Name: %s".printf (s.pretty_name);
 		output += "\nGenre: %s".printf (s.genre);
@@ -119,6 +119,14 @@ class DTT.Main : GLib.Object {
 			
 			if (Globals.get_new) {
 				// Get new
+				return 0;
+			}
+
+			if (Globals.search != null) {
+				List<Show> shows = dtt.shows_search (Globals.search);
+				foreach (var s in shows) {
+					print_show (s);
+				}
 				return 0;
 			}
 			

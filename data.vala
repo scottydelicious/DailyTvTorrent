@@ -47,19 +47,12 @@ class DTT.Data : GLib.Object {
 
 	public Show show_get_info (Options opts) {
 		
-		Show show = Show ();
 		string method = "show.getInfo";
 		string url = "%s/%s?show_name=%s"
 			.printf(base_url, method, opts.show_name);
 		string data = query_remote (url);
 		Json.Object root = json_root_object (data);
-		Json.Object episode = root.get_object_member("latest_episode");
-
-		show.name = root.get_string_member("name");
-		show.pretty_name = root.get_string_member("pretty_name");
-		show.genre = root.get_string_member("genre");
-		show.link = root.get_string_member("link");
-		show.latest_episode = assemble_episode (episode);
+		Show show = assemble_show (root);
 
 		return show;
 
@@ -75,8 +68,34 @@ class DTT.Data : GLib.Object {
 
 		return query_remote (url);
 	}
+
+	public List shows_search (string q) {
+		string page = "";
+		List<Show> shows = new List<Show> ();
+		string url = "%s/shows.search?query=%s%s";
+		string data = query_remote (url.printf(base_url, q, page));
+		Json.Object root = json_root_object (data);
+		int p = (int) root.get_int_member ("total_pages");
+		
+		int i;
+  	for (i = 0; i < p; i++) {
+  		page = "&page=%i".printf(i);
+  		data = query_remote(url.printf(base_url,q,page));
+  		root = json_root_object (data);
+
+  		foreach (var show_arr in root.get_array_member ("shows").get_elements () ) {
+  			var show_obj = show_arr.get_object ();
+  			shows.append (assemble_show (show_obj));
+  		}
+
+  	}
+
+  	return shows;
+	}
 	
-	// Private Methods
+	/**
+	 * PRIVATE Methods
+	 */
 	private string query_remote (string *url) {
 
 		var session = new Soup.SessionAsync();
@@ -113,6 +132,19 @@ class DTT.Data : GLib.Object {
 		le.hd1080 = episode.get_null_member("1080") ? "" : episode.get_string_member ("1080");
 
 		return le;
+	}
+
+	private Show assemble_show (Json.Object s) {
+
+		Show show = new Show();
+		show.name = s.get_string_member("name");
+		show.pretty_name = s.get_string_member("pretty_name");
+		show.genre = s.get_string_member("genre");
+		show.link = s.get_string_member("link");
+		Json.Object episode = s.get_object_member("latest_episode");
+		show.latest_episode = assemble_episode (episode);
+		
+		return show;
 	}
 
 }
