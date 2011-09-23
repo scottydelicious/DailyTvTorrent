@@ -1,6 +1,6 @@
 /*
 BUILD WITH:
-valac --thread --pkg libsoup-2.4 --pkg json-glib-1.0 --pkg gee-1.0 main.vala data.vala -o dtt
+valac --thread --pkg libsoup-2.4 --pkg json-glib-1.0 main.vala data.vala structures.vala -o dtt
 
 
 Copyright 2011 Scotty Delicious <scottydelicious@gmail.com>
@@ -20,8 +20,6 @@ License for more details.
 You should have received a copy of the GNU General Public License 
 along with Daily TV Torrents. If not, see http://www.gnu.org/licenses/.
 */
-
-using Gee;
 
 class DTT.Main : GLib.Object {
 
@@ -56,6 +54,29 @@ class DTT.Main : GLib.Object {
 	private static const string VERSION = "Daily TV Torrents CLI\nversion 0.1.0\n";
 	private static string data_response;
 
+	public static void print_episode (LatestEpisode le) {
+		string output = "\nTitle: %s\n";
+		output += "Episode: %s\n";
+		output += "Uploaded: %s\n\n";
+		output += "Torrent Links\n--------------\n";
+		output += "[HD]: %s\n";
+		output += "[720]: %s\n";
+		output += "[1080]: %s\n";
+		stdout.printf(output, le.title, le.number, Age.to_string(le.age), le.hd, le.hd720, le.hd1080);
+	}
+
+	public static void print_show (Show s) {
+		string output = "";
+		output += "\nName: %s".printf (s.name);
+		output += "\nPretty Name: %s".printf (s.pretty_name);
+		output += "\nGenre: %s".printf (s.genre);
+		output += "\nShow Link: %s\n\n".printf (s.link);
+		output += "** Latest Episode **";
+
+		stdout.printf(output);
+		print_episode(s.latest_episode);
+	}
+
 	public static int main (string[] args) {
 		DTT.Data dtt = new DTT.Data ();
 		OptionContext context = new OptionContext ("tv_show_name");
@@ -81,23 +102,18 @@ class DTT.Main : GLib.Object {
 		}
 
 		if (Globals.episode) {
-			HashMap<string,string> le = dtt.episode_get_latest (args[1]);
-			string output = "\nTitle: %s\n";
-			output += "Episode: %s\n";
-			output += "Age %s\n\n";
-			output += "Links\n-------\n";
-			output += "[HD]: %s\n";
-			output += "[720]: %s\n";
-			output += "[1080]: %s\n";
-			stdout.printf(output, le["title"], le["number"], le["age"], le["hd"], le["720"], le["1080"]);
-
+			LatestEpisode le = dtt.episode_get_latest (args[1]);
+			print_episode (le);
 			return 0;
 		}
 
 		if (Globals.show) {
 			
 			if (Globals.info) {
-				// Info
+				Options opts = Options();
+				opts.show_name = args[1];
+				Show show = dtt.show_get_info (opts);
+				print_show (show);
 				return 0;
 			}
 			
@@ -106,8 +122,11 @@ class DTT.Main : GLib.Object {
 				return 0;
 			}
 			
-			dtt.optparams.colors = Globals.colors ? true : false;
-			data_response = dtt.shows_get_text_info (args[1]);
+			Options opts = Options ();
+			opts.show_name = args[1];
+			opts.colors = Globals.colors ? true : false;
+			opts.links = Globals.links ? true : false;
+			data_response = dtt.shows_get_text_info (opts);
 			stdout.printf ("%s\n", data_response);
 
 		}
