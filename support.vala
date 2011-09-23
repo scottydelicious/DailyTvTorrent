@@ -18,6 +18,41 @@ along with Daily TV Torrents. If not, see http://www.gnu.org/licenses/.
 */
 
 
+
+/**
+ * Classes
+ */
+class Age : Object {
+	int days;
+	int hours;
+	int minutes;
+	int seconds;
+
+	public string to_string() {
+		string a = "";
+		a += this.days != 0 ? "%i days, ".printf(this.days) : "";
+		a += this.hours != 0 ? "%i hours, ".printf(this.hours) : "";
+		a += this.minutes != 0 ? "%i minutes and ".printf(this.minutes) : "";
+		a += "%i seconds".printf(this.seconds);
+		return a;
+	}
+
+	public Age (int64 seconds = 1) {
+
+		this.seconds = (int) seconds % 60;
+		this.minutes = (int) seconds /60;
+		this.hours = this.minutes / 60;
+		this.minutes %= 60;
+		this.days = this.hours / 24;
+		this.hours %= 24;
+
+	}	
+}
+
+
+/**
+ * Structs
+ */
 struct Options {
 	static string show_name;
 	int page;
@@ -38,37 +73,6 @@ struct LatestEpisode {
 	static string hd;
 	static string hd720;
 	static string hd1080;
-}
-
-struct Age {
-	int days;
-	int hours;
-	int minutes;
-	int seconds;
-
-	public static string to_string(Age age) {
-		string age_string = "";
-		age_string += age.days != 0 ? "%i days, ".printf(age.days) : "";
-		age_string += age.hours != 0 ? "%i hours, ".printf(age.hours) : "";
-		age_string += age.minutes != 0 ? "%i minutes and ".printf(age.minutes) : "";
-		age_string += "%i seconds ago".printf(age.seconds);
-		return age_string;
-	}
-
-	public static Age seconds_to_age (int64 seconds) {
-		
-		Age age = Age ();
-		
-		age.seconds = (int) seconds % 60;
-		age.minutes = (int) seconds /60;
-		age.hours = age.minutes / 60;
-		age.minutes %= 60;
-		age.days = age.hours / 24;
-		age.hours %= 24;
-
-		return age;
-
-	}
 }
 
 struct Show {

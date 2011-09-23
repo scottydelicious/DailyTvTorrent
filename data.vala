@@ -107,8 +107,7 @@ class DTT.Data : GLib.Object {
 
 		le.title = episode.get_null_member("title") ? "" : episode.get_string_member ("title");
 		le.number = episode.get_null_member("num") ? "" : episode.get_string_member ("num");
-		int64 ep_age = episode.get_null_member("age") ? 1 : episode.get_int_member ("age");
-		le.age = Age.seconds_to_age (ep_age);
+		le.age = new Age (episode.get_int_member ("age"));
 		le.hd = episode.get_null_member("hd") ? "" : episode.get_string_member ("hd");
 		le.hd720 = episode.get_null_member("720") ? "" : episode.get_string_member ("720");
 		le.hd1080 = episode.get_null_member("1080") ? "" : episode.get_string_member ("1080");

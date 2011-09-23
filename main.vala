@@ -62,7 +62,7 @@ class DTT.Main : GLib.Object {
 		output += "[HD]: %s\n";
 		output += "[720]: %s\n";
 		output += "[1080]: %s\n";
-		stdout.printf(output, le.title, le.number, Age.to_string(le.age), le.hd, le.hd720, le.hd1080);
+		stdout.printf(output, le.title, le.number, le.age.to_string(), le.hd, le.hd720, le.hd1080);
 	}
 
 	public static void print_show (Show s) {
