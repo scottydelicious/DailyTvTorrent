@@ -54,6 +54,21 @@ struct Age {
 		age_string += "%i seconds ago".printf(age.seconds);
 		return age_string;
 	}
+
+	public static Age seconds_to_age (int64 seconds) {
+		
+		Age age = Age ();
+		
+		age.seconds = (int) seconds % 60;
+		age.minutes = (int) seconds /60;
+		age.hours = age.minutes / 60;
+		age.minutes %= 60;
+		age.days = age.hours / 24;
+		age.hours %= 24;
+
+		return age;
+
+	}
 }
 
 struct Show {

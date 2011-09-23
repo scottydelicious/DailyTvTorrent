@@ -48,7 +48,6 @@ class DTT.Data : GLib.Object {
 	public Show show_get_info (Options opts) {
 		
 		Show show = Show ();
-		LatestEpisode le = LatestEpisode ();
 		string method = "show.getInfo";
 		string url = "%s/%s?show_name=%s"
 			.printf(base_url, method, opts.show_name);
@@ -109,27 +108,12 @@ class DTT.Data : GLib.Object {
 		le.title = episode.get_null_member("title") ? "" : episode.get_string_member ("title");
 		le.number = episode.get_null_member("num") ? "" : episode.get_string_member ("num");
 		int64 ep_age = episode.get_null_member("age") ? 1 : episode.get_int_member ("age");
-		le.age = seconds_to_age (ep_age);
+		le.age = Age.seconds_to_age (ep_age);
 		le.hd = episode.get_null_member("hd") ? "" : episode.get_string_member ("hd");
 		le.hd720 = episode.get_null_member("720") ? "" : episode.get_string_member ("720");
 		le.hd1080 = episode.get_null_member("1080") ? "" : episode.get_string_member ("1080");
 
 		return le;
-	}
-
-	private Age seconds_to_age (int64 seconds) {
-		
-		Age age = Age ();
-		
-		age.seconds = (int) seconds % 60;
-		age.minutes = (int) seconds /60;
-		age.hours = age.minutes / 60;
-		age.minutes %= 60;
-		age.days = age.hours / 24;
-		age.hours %= 24;
-
-		return age;
-
 	}
 
 }
