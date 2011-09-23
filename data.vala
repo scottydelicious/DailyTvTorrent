@@ -78,19 +78,19 @@ class DTT.Data : GLib.Object {
 		int p = (int) root.get_int_member ("total_pages");
 		
 		int i;
-  	for (i = 0; i < p; i++) {
-  		page = "&page=%i".printf(i);
-  		data = query_remote(url.printf(base_url,q,page));
-  		root = json_root_object (data);
-
-  		foreach (var show_arr in root.get_array_member ("shows").get_elements () ) {
-  			var show_obj = show_arr.get_object ();
-  			shows.append (assemble_show (show_obj));
-  		}
-
-  	}
-
-  	return shows;
+		for (i = 0; i < p; i++) {
+			page = "&page=%i".printf(i);
+			data = query_remote(url.printf(base_url,q,page));
+			root = json_root_object (data);
+			
+			foreach (var show_arr in root.get_array_member ("shows").get_elements () ) {
+				var show_obj = show_arr.get_object ();
+				shows.append (assemble_show (show_obj));
+			}
+		
+		}
+		
+		return shows;
 	}
 	
 	/**
